@@ -29,7 +29,7 @@ app.get('/projetos', (req, res) => {
 });
 });
 
-//mostrar usuarios
+
 app.get('/', (req, res) => {
   res.send = "Projeto Meio Ambiente"
 
