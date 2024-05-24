@@ -1,6 +1,14 @@
 import express from 'express';
 import cors from 'cors';
-import { db } from "./db.js";
+import mysql from "mysql"
+
+const db = mysql.createConnection({
+  host: "db-victor.ceoweta0tvps.us-east-1.rds.amazonaws.com",
+  user: "admin",
+  password: "admin123",
+  database: "ProjetoAC",
+});
+
 
 const app = express();//criar app
 app.use(express.json());
