@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import mysql from "mysql"
+import mysql from 'mysql';
 
 const db = mysql.createConnection({
   host: "db-victor.ceoweta0tvps.us-east-1.rds.amazonaws.com",
@@ -9,50 +9,49 @@ const db = mysql.createConnection({
   database: "ProjetoAC",
 });
 
-
-const app = express();//criar app
+const app = express();
 app.use(express.json());
-const port = 3636; // definir porta
+app.use(cors());
 
-app.use(cors()); //usar cors
+const port = 3636;
 
-
+// Endpoint para listar todos os projetos
 app.get('/projetos', (req, res) => {
-  const q = "SELECT * FROM projetos ORDER BY data_criacao DESC;";
-  db.query(q, (err, result) => {
+  const query = "SELECT * FROM projetos ORDER BY data_criacao DESC;";
+  db.query(query, (err, result) => {
     if (err) {
       console.error('Erro ao obter dados do banco de dados:', err);
-      res.status(500).send('vc entrou em admin');
+      res.status(500).send('Erro ao obter dados do banco de dados.');
     } else {
       res.json(result);
-    }
-});
-});
-
-//mostrar usuarios
-app.get('/', (req, res) => {
-  res.send = "Projeto Meio Ambiente"
-
-});
-  
-//cadastrar novo usuario
-app.post('/novoprojeto', (req, res) => {
-  const q = "INSERT INTO projetos (`nome`, `descricao`) VALUES (?,?)";
-  const values = [
-    req.body.nome,
-    req.body.descricao,
-  ];
-
-  db.query(q, values, (err, result) => {
-    if (err) {
-      console.error('Erro ao inserir dados no banco de dados:', err);
-      res.status(500).send('Erro ao inserir dados no banco de dados.');
-    } else {
-      res.status(200).send('Projeto cadastrado');
     }
   });
 });
 
+// Endpoint para verificar se o servidor está rodando
+app.get('/', (req, res) => {
+  res.json({ message: "server is running" });
+});
+
+// Endpoint para cadastrar um novo projeto
+app.post('/novoprojeto', (req, res) => {
+  const query = "INSERT INTO projetos (`nome`, `descricao`, `objetivo`, `sobre`) VALUES (?,?,?,?)";
+  const values = [
+    req.body.nome,
+    req.body.descricao,
+    req.body.objetivo,
+    req.body.sobre,
+  ];
+
+  db.query(query, values, (err, result) => {
+    if (err) {
+      console.error('Erro ao inserir dados no banco de dados:', err);
+      res.status(500).send('Erro ao inserir dados no banco de dados.');
+    } else {
+      res.status(200).send('Projeto cadastrado com sucesso.');
+    }
+  });
+});
 
 // Iniciar o servidor
 app.listen(port, () => {
